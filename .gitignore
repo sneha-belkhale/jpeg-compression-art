@@ -1,0 +1,4 @@
+*.out
+*Store
+.dSYM/
+bin/

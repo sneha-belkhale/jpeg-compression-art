@@ -1,7 +1,7 @@
 # jpeg-compression-art
 
 
-~how to use~
+how to use~
 
 cd src 
 python jpeg_compression <path_to_image> <size_of_block> <quant_value>

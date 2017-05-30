@@ -132,12 +132,28 @@ def createInvCoefficientMatrix(n):
 main script
 """
 
+#parse arguments
+from argparse import ArgumentParser
 
-img_filename = sys.argv[1]
+parser=ArgumentParser()
+
+parser.add_argument("-image", dest="PATH_TO_IMAGE", default="../images/clouds.png",
+                     help="image to compress")
+parser.add_argument("-size", dest="SIZE_OF_BLOCK", default = 9.0,
+					 help="set compression block size")
+parser.add_argument("-quant", dest="QUANT_VALUE", default = 80.0,
+					 help="chose value for a uniform quantization")
+parser.add_argument("-output", dest="PATH_TO_IMAGE_OUTPUT",
+					 help="path to save the image after compression")
+
+args = parser.parse_args()
+
+img_filename = args.PATH_TO_IMAGE
+
 #set compression block size. this will effect the size of the grid pattern in the decompressed image
-n = np.int8(sys.argv[2])
+n = np.int8(args.SIZE_OF_BLOCK)
 #chose value for a uniform quantization
-quant_val = np.int8(sys.argv[3])
+quant_val = np.int8(args.QUANT_VALUE)
 
 #read in the original image
 img_original_rgb = cv2.imread(img_filename)
@@ -218,9 +234,13 @@ img_reconstructed[high_values_indices] = 255
 #adjust the green channel to the new decompressed values
 img_original_rgb[:,:,1] = np.int8(img_reconstructed)
 
-cv2.imshow("reconstructed", img_original_rgb)
-while(1):
-    if( cv2.waitKey(100) == 27 ):
-		break
+if args.PATH_TO_IMAGE_OUTPUT is not None:
+		cv2.imwrite(args.PATH_TO_IMAGE_OUTPUT, img_original_rgb)
+		print "Result saved to: ", args.PATH_TO_IMAGE_OUTPUT
+else: 
+	cv2.imshow("reconstructed", img_original_rgb)
+	while(1):
+	    if( cv2.waitKey(100) == 27 ):
+			break
 
 #cv2.waitKey(0)
